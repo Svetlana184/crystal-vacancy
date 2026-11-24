@@ -72,25 +72,25 @@ def check_rules(vacancy: NormalizedVacancy) -> List[VacancyIssue]:
             )
         )
 
-    # 5. График работы (пропуск или сменный/гибкий без конкретики по сменам)
+    # 5. График работы (учитываем, что конкретика по сменам/часам может быть в duty)
+    has_shift_details = re.search(
+        r"(\d/\d|\d\s*через\s*\d|день/ночь|ночн|с\s*\d{1,2}[:.]\d{2}|до\s*\d{1,2}[:.]\d{2}|\d+\s*час|пятидневк|шестидневк)",
+        f"{vacancy.schedule} {vacancy.duty}",
+        flags=re.IGNORECASE,
+    )
+
     if not vacancy.schedule:
-        issues.append(
-            VacancyIssue(
-                topic="График",
-                field="schedule",
-                quote="",
-                issue="Не указан график работы.",
-                recommendation="Уточните режим работы (пятидневка, сменный, гибкий) и рабочие часы.",
+        if not has_shift_details:
+            issues.append(
+                VacancyIssue(
+                    topic="График",
+                    field="schedule",
+                    quote="",
+                    issue="Не указан график работы.",
+                    recommendation="Уточните режим работы (пятидневка, сменный, гибкий) и рабочие часы.",
+                )
             )
-        )
     elif re.search(r"сменн|гибк|скользящ", vacancy.schedule, flags=re.IGNORECASE):
-        combined_text = f"{vacancy.schedule} {vacancy.duty}"
-        # Ищем упоминание смен (2/2, 1/3, день/ночь) или точного времени (с 8:00, 8 часов)
-        has_shift_details = re.search(
-            r"(\d/\d|\d\s*через\s*\d|день/ночь|ночн|с\s*\d{1,2}[:.]\d{2}|до\s*\d{1,2}[:.]\d{2}|\d+\s*час)",
-            combined_text,
-            flags=re.IGNORECASE,
-        )
         if not has_shift_details:
             issues.append(
                 VacancyIssue(
