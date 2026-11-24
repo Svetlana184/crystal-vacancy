@@ -242,40 +242,35 @@ flowchart TD
 ```text
 crystal-vacancy/
 ├── config/
-│   └── settings.yaml          # Настройки региона 39, лимитов API и Cron
+│   └── settings.yaml              # Настройки региона 39, лимитов API и Cron
 ├── data/
-│   ├── reports/
-│   │   └── latest.json        # Итоговый актуальный отчёт анализа
-│   ├── voiceover/             # Аудиодорожки озвучки (единый мужской голос Dmitry)
-│   └── test_vacancies.json    # Учебный датасет для проверочного режима
+│   ├── mock_expected_report.json  # Эталонный ожидаемый отчёт валидации
+│   ├── mock_vacancies.json        # 8 эталонных мок-вакансий (Роль 2)
+│   └── test_vacancies.json        # Учебный датасет для проверочного режима
 ├── scripts/
-│   ├── ping_api.py            # Проверка доступности API trudvsem.ru
-│   ├── record_video.py        # Автоматическая запись видеоролика через Playwright
-│   └── generate_voiceover.py  # Генерация озвучки через Edge TTS
+│   └── ping_api.py                # Проверка доступности API trudvsem.ru
 ├── src/
-│   ├── analyzer/              # Ядро гибридного анализа
-│   │   ├── index.py           # Оркестратор анализатора вакансий
-│   │   ├── rules.py           # Проверка пропусков и логических коллизий
-│   │   └── llm.py             # Семантический анализ через языковую модель
+│   ├── analyzer/                  # Ядро гибридного анализа
+│   │   ├── __init__.py            # Пакет анализатора
+│   │   ├── index.py               # Оркестратор анализатора вакансий
+│   │   ├── llm.py                 # Семантический анализ через языковую модель
+│   │   └── rules.py               # Детерминированные правила (пропуски, коллизии)
 │   ├── api/
-│   │   └── trudvsem.py        # Клиент открытого API портала «Работа в России»
+│   │   └── trudvsem.py            # Клиент открытого API портала «Работа в России»
 │   ├── parser/
-│   │   └── clean.py           # Очистка HTML и нормализация полей
+│   │   └── clean.py               # Очистка HTML и нормализация полей
 │   ├── report/
-│   │   └── report.py          # Атомарное сохранение и дедупликация по ID
+│   │   └── report.py              # Атомарное сохранение и дедупликация по ID
 │   ├── scheduler/
-│   │   └── scheduler.py       # Фоновое обновление по Cron (APScheduler)
-│   ├── config.py              # Загрузка YAML и .env конфигурации
-│   ├── main.py                # Единая точка входа CLI (run, schedule, view)
-│   └── schemas.py             # Pydantic v2 схемы (NormalizedVacancy, VacancyReport)
-├── tests/                     # Автотесты логики правил и валидации
-├── videos/
-│   └── demo_video.webm        # Записанный демонстрационный ролик (2:32)
-├── .env.example               # Шаблон переменных окружения
-├── index.html                 # Интерактивный мини-интерфейс инспектора и презентации
-├── README.md                  # Документация проекта
-├── requirements.txt           # Зависимости Python
-└── start_presentation.bat     # Быстрый запуск презентации в 1 клик на Windows
+│   │   └── scheduler.py           # Фоновое обновление по Cron (APScheduler)
+│   ├── config.py                  # Загрузка YAML и .env конфигурации
+│   ├── main.py                    # Единая точка входа CLI (run, schedule, view)
+│   └── schemas.py                 # Pydantic v2 схемы (NormalizedVacancy, VacancyReport)
+├── tests/                         # Модульные автотесты (36 тестов нормализатора)
+├── .env.example                   # Шаблон переменных окружения
+├── .gitignore                     # Исключения Git
+├── README.md                      # Документация проекта
+└── requirements.txt               # Зависимости Python
 ```
 
 ---
