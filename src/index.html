@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Прозрачная вакансия — Презентация & Инспектор (КАНТКОД)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .card-omission { border-left: 5px solid #f59e0b; }
+    .card-ambiguity { border-left: 5px solid #6366f1; }
+    .card-contradiction { border-left: 5px solid #f43f5e; }
+    .spotlight-pulse {
+      animation: spotlight-glow 2s infinite alternate;
+    }
+    @keyframes spotlight-glow {
+      from { box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4); }
+      to { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.8), 0 10px 25px -5px rgba(0, 0, 0, 0.5); }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-slate-950/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
+          💎
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold text-white tracking-tight">Прозрачная вакансия</h1>
+            <span class="text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full">КАНТКОД • 39 регион</span>
+          </div>
+          <p class="text-xs text-slate-400">Демонстрация сценария ролика (2:40) & Инспектор вакансий</p>
+        </div>
+      </div>
+
+      <!-- Dataset Selector -->
+      <div class="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800">
+        <button id="dataset-mock-btn" onclick="selectDataset('mock')" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition flex items-center gap-1.5">
+          <span>🎯 Мок команды (8)</span>
+        </button>
+        <button id="dataset-test-btn" onclick="selectDataset('test')" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <span>📦 Сценарий ролика (4)</span>
+        </button>
+        <button id="dataset-api-btn" onclick="selectDataset('api')" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <span>🌐 Trudvsem API (50)</span>
+        </button>
+      </div>
+
+      <!-- Mode Switcher -->
+      <div class="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800">
+        <button id="tab-demo" onclick="switchView('demo')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition flex items-center gap-1.5">
+          <span>🎬 Презентация (2:40)</span>
+        </button>
+        <button id="tab-inspector" onclick="switchView('inspector')" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <span>📋 Карточки отчёта</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="toggleAudio()" id="btn-audio" class="px-2.5 py-1.5 text-xs font-medium bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition flex items-center gap-1">
+          <span id="audio-icon">🔊</span> <span id="audio-status">Озвучка: Вкл</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= VIEW 1: INTERACTIVE PRESENTATION ================= -->
+  <section id="view-demo" class="flex-1 flex flex-col max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-4">
+    
+    <!-- Timeline Navigation -->
+    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-xl">
+      <div class="flex items-center gap-2">
+        <button id="btn-play" onclick="togglePlay()" class="w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center font-bold text-lg transition shadow-md shadow-indigo-600/30">
+          ▶
+        </button>
+        <div>
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Текущий блок сценария:</div>
+          <div id="step-title" class="text-xs sm:text-sm font-bold text-white">0:00–0:30 • Архитектура и структура</div>
+        </div>
+      </div>
+
+      <!-- Step Pills -->
+      <div class="flex flex-wrap items-center gap-1.5" id="step-buttons">
+        <button onclick="goToStep(0)" class="step-btn px-2.5 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white transition">1. Архитектура (0:00)</button>
+        <button onclick="goToStep(1)" class="step-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">2. Проверочный режим (0:30)</button>
+        <button onclick="goToStep(2)" class="step-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">3. Разбор отчёта (1:15)</button>
+        <button onclick="goToStep(3)" class="step-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">4. Рабочий API (2:00)</button>
+        <button onclick="goToStep(4)" class="step-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">5. Финал (2:40)</button>
+      </div>
+
+      <!-- Timer -->
+      <div class="mono text-xs font-bold bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl text-indigo-400 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="demo-time">00:00</span> / 02:40
+      </div>
+    </div>
+
+    <!-- Presentation Stage -->
+    <div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl flex-1 flex flex-col min-h-[520px]">
+      
+      <!-- Scene 0: Архитектура (0:00–0:30) -->
+      <div id="scene-0" class="scene p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4 overflow-y-auto max-h-[620px]">
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800/80">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-semibold mb-1">
+              <span>🏛 Блок 1 (0:00 – 0:30)</span> • Архитектурное ядро сервиса
+            </div>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Модульная архитектура «Прозрачная вакансия»</h2>
+          </div>
+          <div class="text-xs text-slate-400 hidden sm:block">
+            Регион 39 • Калининградская область • ТЗ хакатона
+          </div>
+        </div>
+
+        <!-- Main Content: VS Code Explorer (Left) + Architecture Modules (Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
+          
+          <!-- LEFT: VS Code Style File Explorer (matching user photo) -->
+          <div class="lg:col-span-5 bg-[#181a1f] rounded-xl border border-slate-800/90 shadow-2xl flex flex-col overflow-hidden">
+            <!-- Explorer Top Bar -->
+            <div class="bg-[#21252b] px-3 py-2 border-b border-slate-800 flex items-center justify-between text-xs text-slate-300">
+              <div class="flex items-center gap-2 font-semibold">
+                <svg class="w-3.5 h-3.5 text-indigo-400" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                <span class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Проводник: crystal-vacancy</span>
+              </div>
+              <span class="text-[10px] mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800">git: main</span>
+            </div>
+
+            <!-- Search Mockup bar (like in screenshot) -->
+            <div class="p-2 border-b border-slate-800/60 bg-[#1b1e24]">
+              <div class="flex items-center gap-2 px-2.5 py-1 bg-[#121418] border border-slate-700/60 rounded text-[11px] text-slate-400">
+                <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <span class="text-slate-500">Go to file...</span>
+              </div>
+            </div>
+
+            <!-- Tree View Container -->
+            <div class="p-2 mono text-xs leading-tight space-y-0.5 overflow-y-auto flex-1 select-none text-slate-300 font-sans">
+              
+              <!-- config folder (selected with blue bar as in photo) -->
+              <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-[#04395e]/40 border-l-[3px] border-[#007acc] text-white">
+                <span class="text-slate-400 text-[10px]">▶</span>
+                <span class="text-sky-400">📁</span>
+                <span class="font-medium text-[12px]">config</span>
+              </div>
+
+              <!-- data folder -->
+              <div class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-800/50 text-slate-300 transition">
+                <span class="text-slate-400 text-[10px]">▶</span>
+                <span class="text-sky-400">📁</span>
+                <span class="text-[12px]">data</span>
+              </div>
+
+              <!-- scripts folder (expanded) -->
+              <div class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-800/50 text-slate-300 transition">
+                <span class="text-slate-400 text-[10px]">▼</span>
+                <span class="text-sky-400">📁</span>
+                <span class="text-[12px]">scripts</span>
+              </div>
+              <div class="border-l border-slate-700/60 ml-3.5 pl-3 py-0.5 space-y-0.5">
+                <div class="flex items-center gap-2 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-amber-400 text-xs">📄</span>
+                  <span class="text-[11px] mono text-slate-300">ping_api.py</span>
+                </div>
+              </div>
+
+              <!-- src folder (expanded, highlighted core) -->
+              <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-indigo-500/10 text-white font-medium">
+                <span class="text-slate-400 text-[10px]">▼</span>
+                <span class="text-indigo-400">📂</span>
+                <span class="text-[12px] font-bold text-indigo-300">src</span>
+                <span class="text-[9px] bg-indigo-900/60 text-indigo-300 px-1 rounded ml-auto">core</span>
+              </div>
+              
+              <!-- src children -->
+              <div class="border-l-2 border-indigo-500/30 ml-3.5 pl-2.5 py-0.5 space-y-0.5">
+                <div class="flex items-center gap-1.5 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-slate-400 text-[10px]">▶</span>
+                  <span class="text-sky-400">📁</span>
+                  <span class="text-[11px] mono text-indigo-200 font-semibold">analyzer</span>
+                </div>
+                <div class="flex items-center gap-1.5 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-slate-400 text-[10px]">▶</span>
+                  <span class="text-sky-400">📁</span>
+                  <span class="text-[11px] mono text-indigo-200 font-semibold">api</span>
+                </div>
+                <div class="flex items-center gap-1.5 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-slate-400 text-[10px]">▶</span>
+                  <span class="text-sky-400">📁</span>
+                  <span class="text-[11px] mono text-indigo-200 font-semibold">parser</span>
+                </div>
+                <div class="flex items-center gap-1.5 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-slate-400 text-[10px]">▶</span>
+                  <span class="text-sky-400">📁</span>
+                  <span class="text-[11px] mono text-indigo-200 font-semibold">report</span>
+                </div>
+                <div class="flex items-center gap-1.5 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-slate-400 text-[10px]">▶</span>
+                  <span class="text-sky-400">📁</span>
+                  <span class="text-[11px] mono text-indigo-200 font-semibold">scheduler</span>
+                </div>
+                <!-- python files -->
+                <div class="flex items-center gap-2 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-amber-400 text-xs">📄</span>
+                  <span class="text-[11px] mono text-slate-300">config.py</span>
+                </div>
+                <div class="flex items-center gap-2 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-200">
+                  <span class="text-amber-400 text-xs">📄</span>
+                  <span class="text-[11px] mono text-slate-200 font-semibold">main.py</span>
+                </div>
+                <div class="flex items-center gap-2 px-1 py-0.5 hover:bg-slate-800/40 rounded text-slate-300">
+                  <span class="text-amber-400 text-xs">📄</span>
+                  <span class="text-[11px] mono text-slate-300">schemas.py</span>
+                </div>
+              </div>
+
+              <!-- tests folder -->
+              <div class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-800/50 text-slate-300 transition">
+                <span class="text-slate-400 text-[10px]">▶</span>
+                <span class="text-sky-400">📁</span>
+                <span class="text-[12px]">tests</span>
+              </div>
+
+              <!-- Root configuration files -->
+              <div class="flex items-center gap-2 px-2 py-0.5 hover:bg-slate-800/50 rounded text-slate-400 transition">
+                <span class="text-slate-500 text-xs">📄</span>
+                <span class="text-[11px] mono">.env.example</span>
+              </div>
+              <div class="flex items-center gap-2 px-2 py-0.5 hover:bg-slate-800/50 rounded text-slate-400 transition">
+                <span class="text-slate-500 text-xs">📄</span>
+                <span class="text-[11px] mono">.gitignore</span>
+              </div>
+              <div class="flex items-center gap-2 px-2 py-0.5 hover:bg-slate-800/50 rounded text-slate-300 font-medium transition">
+                <span class="text-sky-400 text-xs">📝</span>
+                <span class="text-[11px] mono text-slate-300 font-semibold">README.md</span>
+              </div>
+              <div class="flex items-center gap-2 px-2 py-0.5 hover:bg-slate-800/50 rounded text-slate-400 transition">
+                <span class="text-slate-500 text-xs">📄</span>
+                <span class="text-[11px] mono">requirements.txt</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Core Architecture Highlights & Pipeline Flow -->
+          <div class="lg:col-span-7 flex flex-col justify-between space-y-3">
+            
+            <!-- Pipeline Flow Diagram Banner -->
+            <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-xl">
+              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>Конвейер обработки данных (Pipeline Flow)</span>
+                <span class="text-indigo-400 mono">Pydantic v2 Contract</span>
+              </div>
+              <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
+                <div class="bg-slate-950 p-2 rounded-lg border border-slate-800 flex flex-col justify-center items-center">
+                  <span class="text-base">🌐</span>
+                  <span class="font-bold text-indigo-300 text-[11px] mt-0.5">API 39 рег.</span>
+                  <span class="text-[9px] text-slate-500">Trudvsem Client</span>
+                </div>
+                <div class="bg-slate-950 p-2 rounded-lg border border-slate-800 flex flex-col justify-center items-center">
+                  <span class="text-base">🧹</span>
+                  <span class="font-bold text-indigo-300 text-[11px] mt-0.5">Парсер</span>
+                  <span class="text-[9px] text-slate-500">Нормализация</span>
+                </div>
+                <div class="bg-indigo-950/70 p-2 rounded-lg border border-indigo-600/60 flex flex-col justify-center items-center shadow-md">
+                  <span class="text-base">🧠</span>
+                  <span class="font-bold text-white text-[11px] mt-0.5">Гибрид ИИ</span>
+                  <span class="text-[9px] text-indigo-300">Rules + LLM</span>
+                </div>
+                <div class="bg-slate-950 p-2 rounded-lg border border-slate-800 flex flex-col justify-center items-center">
+                  <span class="text-base">📦</span>
+                  <span class="font-bold text-indigo-300 text-[11px] mt-0.5">Отчёт</span>
+                  <span class="text-[9px] text-slate-500">Дедупликация</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Architecture Cards (2x2 grid) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 flex-1">
+              
+              <!-- Card 1: API -->
+              <div class="bg-slate-900/80 border border-slate-800/90 p-3 rounded-xl hover:border-indigo-500/40 transition flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="mono text-[11px] font-bold text-indigo-400">src/api/trudvsem.py</span>
+                    <span class="text-base">🌐</span>
+                  </div>
+                  <div class="text-xs font-bold text-white mt-1">Клиент API региона 39</div>
+                  <p class="text-[11px] text-slate-400 mt-1 leading-snug">
+                    Пагинация (2+ страниц), таймауты и автоматический fail-safe механизм при сбоях сети.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 2: Parser -->
+              <div class="bg-slate-900/80 border border-slate-800/90 p-3 rounded-xl hover:border-indigo-500/40 transition flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="mono text-[11px] font-bold text-indigo-400">src/parser/clean.py</span>
+                    <span class="text-base">🧹</span>
+                  </div>
+                  <div class="text-xs font-bold text-white mt-1">Парсер & Нормализация</div>
+                  <p class="text-[11px] text-slate-400 mt-1 leading-snug">
+                    Очистка HTML, приведение сырых полей к единому строгому контракту <span class="mono text-indigo-200">NormalizedVacancy</span>.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 3: Hybrid Analyzer -->
+              <div class="bg-indigo-950/40 border border-indigo-500/60 p-3 rounded-xl shadow-lg shadow-indigo-950/50 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="mono text-[11px] font-bold text-indigo-300">src/analyzer/</span>
+                    <span class="text-base">🧠</span>
+                  </div>
+                  <div class="text-xs font-bold text-white mt-1">Гибридный анализатор</div>
+                  <p class="text-[11px] text-slate-300 mt-1 leading-snug">
+                    <b>rules.py</b> (пропуски & коллизии) + <b>llm.py</b> (семантическая неоднозначность) + валидация Pydantic.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 4: Report & Scheduler -->
+              <div class="bg-slate-900/80 border border-slate-800/90 p-3 rounded-xl hover:border-indigo-500/40 transition flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="mono text-[11px] font-bold text-indigo-400">src/report/ & scheduler/</span>
+                    <span class="text-base">📦</span>
+                  </div>
+                  <div class="text-xs font-bold text-white mt-1">Дедупликация & Cron</div>
+                  <p class="text-[11px] text-slate-400 mt-1 leading-snug">
+                    Атомарное сохранение отчёта с гарантией 1 записи на ID вакансии + фоновый APScheduler.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Scene 1: Проверочный режим Local (0:30–1:15) -->
+      <div id="scene-1" class="scene hidden p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold mb-2">
+            <span>⚡ Блок 2 (0:30 – 1:15)</span> • Запуск проверочного режима на учебном наборе
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Выполнение команды и детальные логи правил, LLM и валидации</h2>
+        </div>
+
+        <!-- Terminal Window Mockup -->
+        <div class="bg-black/90 rounded-xl border border-slate-800 p-4 mono text-xs sm:text-[13px] leading-relaxed shadow-inner overflow-x-auto flex-1 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+              <span class="text-slate-500 text-[11px] ml-2 font-semibold">terminal — crystal-vacancy</span>
+            </div>
+            <span class="text-[10px] text-slate-500">python 3.13</span>
+          </div>
+
+          <div class="space-y-1.5 text-slate-300" id="terminal-lines">
+            <div class="text-emerald-400 font-bold">$ python -m src.main run --mode local --file data/test_vacancies.json</div>
+            <div class="text-slate-400">=== Запуск пайплайна (mode=local) ===</div>
+            <div class="text-slate-400">[Local] Загружено 4 вакансий из data/test_vacancies.json</div>
+            <div class="pt-1 text-slate-200"><span class="text-indigo-400">[Analyze] ID: test-001-ideal</span> | Инженер по метрологии</div>
+            <div class="text-slate-400 pl-4">├─ [Rule Engine] Проверка полей... <span class="text-emerald-400">Пропусков: 0, Противоречий: 0</span></div>
+            <div class="text-slate-400 pl-4">├─ [LLM Query] llama-3.1-8b: анализ семантической неоднозначности...</div>
+            <div class="text-emerald-400 pl-4">└─ [Validation] Контракт проверен: 0 замечаний (чистая вакансия)</div>
+
+            <div class="pt-1 text-slate-200"><span class="text-amber-400">[Analyze] ID: test-002-missing</span> | Помощник повара</div>
+            <div class="text-amber-300 pl-4">├─ [Rule Engine] <span class="font-bold">Найдено 3 пропуска</span> (requirements, salary, location)</div>
+            <div class="text-emerald-400 pl-4">└─ [Validation] Контракт проверен: 3 замечания (цитаты строго пустые)</div>
+
+            <div class="pt-1 text-slate-200"><span class="text-indigo-400">[Analyze] ID: test-003-ambiguous</span> | Менеджер по продажам</div>
+            <div class="text-indigo-300 pl-4">├─ [LLM Query] llama-3.1-8b: <span class="font-bold">извлечено 4 семантических неоднозначности</span></div>
+            <div class="text-emerald-400 pl-4">└─ [Validation] Контракт проверен: 4 замечания (цитаты извлечены)</div>
+
+            <div class="pt-1 text-slate-200"><span class="text-rose-400">[Analyze] ID: test-004-contradiction</span> | Оператор Call-центра</div>
+            <div class="text-rose-300 pl-4">├─ [Rule Engine] <span class="font-bold">Найдено противоречие</span>: «Полная занятость | Подработка на 2 часа»</div>
+            <div class="text-emerald-400 pl-4">└─ [Validation] Контракт проверен: 1 замечание (оба значения зафиксированы)</div>
+
+            <div class="pt-2 text-indigo-400 font-bold">[Report] Сохранено атомарно в data/reports/latest.json (дедуплицировано)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 2: Разбор итогового отчёта (1:15–2:00) ПОЛНОСТЬЮ ПО СЦЕНАРИЮ VIDEO_SCRIPT.md -->
+      <div id="scene-2" class="scene hidden p-5 sm:p-6 flex-1 flex flex-col space-y-4 overflow-y-auto max-h-[620px]">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-800">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-semibold mb-1">
+              <span>🔍 Блок 3 (1:15 – 2:00)</span> • Разбор итогового отчёта и трёх типов дефектов
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-white">Живые карточки отчёта с фокусировкой по ТЗ хакатона</h2>
+          </div>
+
+          <!-- Quick Jump Buttons to showcase the 3 issues -->
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-xs text-slate-400 font-medium">Фокус на дефект:</span>
+            <button onclick="focusCard('card-scene-002')" class="px-2.5 py-1 text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-800 rounded-lg hover:bg-amber-900 transition">
+              🟡 1. Пропуск
+            </button>
+            <button onclick="focusCard('card-scene-003')" class="px-2.5 py-1 text-xs font-bold bg-indigo-950/80 text-indigo-300 border border-indigo-800 rounded-lg hover:bg-indigo-900 transition">
+              🔵 2. Неоднозначность
+            </button>
+            <button onclick="focusCard('card-scene-004')" class="px-2.5 py-1 text-xs font-bold bg-rose-950/80 text-rose-300 border border-rose-800 rounded-lg hover:bg-rose-900 transition">
+              🔴 3. Противоречие
+            </button>
+          </div>
+        </div>
+
+        <!-- Real Cards Stack with Callout Banners -->
+        <div class="space-y-4">
+          
+          <!-- 1. ПРОПУСК (test-002-missing) -->
+          <div id="card-scene-002" class="bg-slate-950 rounded-xl border border-amber-500/60 shadow-lg overflow-hidden transition duration-300">
+            <!-- Callout Banner -->
+            <div class="bg-amber-950/70 border-b border-amber-900/80 px-4 py-2 flex items-center justify-between text-xs text-amber-200">
+              <span class="font-bold flex items-center gap-1.5">
+                <span>🟡 ПРАВИЛО 1: ПРОПУСК ОБЯЗАТЕЛЬНЫХ ПОЛЕЙ</span>
+              </span>
+              <span class="text-[11px] font-mono bg-amber-900/60 px-2 py-0.5 rounded border border-amber-700">ТРЕБОВАНИЕ ТЗ: ЦИТАТА СТРОГО ПУСТАЯ ("")</span>
+            </div>
+            
+            <div class="p-4 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="mono text-xs font-bold text-white bg-slate-900 px-2.5 py-1 rounded border border-slate-800">test-002-missing</span>
+                <span class="text-sm font-bold text-white">Помощник повара</span>
+                <a href="https://trudvsem.ru/vacancy/card/test-002" target="_blank" class="text-xs text-indigo-400 hover:underline">Карточка на Trudvsem ↗</a>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/80 text-rose-300 border border-rose-800">Замечаний: 3</span>
+            </div>
+
+            <div class="p-4 space-y-3 bg-slate-900/50 border-t border-slate-800">
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 card-omission">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-400/20 text-amber-300 border border-amber-500/30">🟡 ПРОПУСК</span>
+                  <span class="mono text-[10px] text-slate-400">Поле: requirements</span>
+                </div>
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Цитата из источника:</span>
+                  <span class="mono inline-block px-2 py-0.5 ml-1 text-[11px] text-amber-300 bg-amber-950/80 rounded border border-amber-700 italic font-bold">
+                    [ "" — цитата строго пустая, так как требования не указаны ]
+                  </span>
+                </div>
+                <div class="mt-1.5 text-xs text-slate-300"><strong>Суть проблемы:</strong> В вакансии не указаны требования к кандидату (образование, стаж, профессиональные навыки)</div>
+                <div class="mt-2 text-xs bg-slate-900 border border-slate-800 p-2 rounded text-indigo-200">
+                  <strong class="text-indigo-400">💡 Уточнить у работодателя:</strong> Уточните обязательные требования: уровень образования, минимальный опыт работы и квалификацию.
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 card-omission">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-400/20 text-amber-300 border border-amber-500/30">🟡 ПРОПУСК</span>
+                  <span class="mono text-[10px] text-slate-400">Поле: salary</span>
+                </div>
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Цитата:</span>
+                  <span class="mono inline-block px-2 py-0.5 ml-1 text-[11px] text-amber-300 bg-amber-950/80 rounded border border-amber-700 italic font-bold">[ "" — цитата пустая ]</span>
+                </div>
+                <div class="mt-1.5 text-xs text-slate-300"><strong>Суть проблемы:</strong> Не указан размер заработной платы, тарифная ставка или диапазон оклада</div>
+                <div class="mt-2 text-xs bg-slate-900 border border-slate-800 p-2 rounded text-indigo-200">
+                  <strong class="text-indigo-400">💡 Уточнить у работодателя:</strong> Укажите базовый должностной оклад или вилку зарплаты (до вычета налогов или на руки).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. НЕОДНОЗНАЧНОСТЬ (test-003-ambiguous) -->
+          <div id="card-scene-003" class="bg-slate-950 rounded-xl border border-indigo-500/60 shadow-lg overflow-hidden transition duration-300">
+            <!-- Callout Banner -->
+            <div class="bg-indigo-950/70 border-b border-indigo-900/80 px-4 py-2 flex items-center justify-between text-xs text-indigo-200">
+              <span class="font-bold flex items-center gap-1.5">
+                <span>🔵 ПРАВИЛО 2: НЕОДНОЗНАЧНОСТЬ И РАЗМЫТЫЕ ФОРМУЛИРОВКИ (ИИ)</span>
+              </span>
+              <span class="text-[11px] font-mono bg-indigo-900/60 px-2 py-0.5 rounded border border-indigo-700">ТРЕБОВАНИЕ ТЗ: ТОЧНАЯ ЦИТАТА ИЗ ТЕКСТА</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="mono text-xs font-bold text-white bg-slate-900 px-2.5 py-1 rounded border border-slate-800">test-003-ambiguous</span>
+                <span class="text-sm font-bold text-white">Менеджер по продажам</span>
+                <a href="https://trudvsem.ru/vacancy/card/test-003" target="_blank" class="text-xs text-indigo-400 hover:underline">Карточка на Trudvsem ↗</a>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/80 text-rose-300 border border-rose-800">Замечаний: 4</span>
+            </div>
+
+            <div class="p-4 space-y-3 bg-slate-900/50 border-t border-slate-800">
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 card-ambiguity">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-400/20 text-indigo-300 border border-indigo-500/30">🔵 НЕОДНОЗНАЧНОСТЬ</span>
+                  <span class="mono text-[10px] text-slate-400">Поле: salary</span>
+                </div>
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Точная цитата:</span>
+                  <span class="mono font-bold text-indigo-300 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-700">«достойная оплата»</span>
+                </div>
+                <div class="mt-1.5 text-xs text-slate-300"><strong>Суть проблемы:</strong> Субъективная формулировка без указания конкретного размера или вилки оклада</div>
+                <div class="mt-2 text-xs bg-slate-900 border border-slate-800 p-2 rounded text-indigo-200">
+                  <strong class="text-indigo-400">💡 Уточнить у работодателя:</strong> Уточните гарантированный размер оплаты труда (окладную часть) в числовом выражении.
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 card-ambiguity">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-400/20 text-indigo-300 border border-indigo-500/30">🔵 НЕОДНОЗНАЧНОСТЬ</span>
+                  <span class="mono text-[10px] text-slate-400">Поле: schedule</span>
+                </div>
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Точная цитата:</span>
+                  <span class="mono font-bold text-indigo-300 bg-indigo-950 px-2 py-0.5 rounded border border-indigo-700">«Гибкий график»</span>
+                </div>
+                <div class="mt-1.5 text-xs text-slate-300"><strong>Суть проблемы:</strong> Формулировка «гибкий график» не раскрывает обязательные часы присутствия и количество смен</div>
+                <div class="mt-2 text-xs bg-slate-900 border border-slate-800 p-2 rounded text-indigo-200">
+                  <strong class="text-indigo-400">💡 Уточнить у работодателя:</strong> Уточните формат гибкого графика: обязательные часы на связи, плавающее начало дня или полностью свободный режим.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. ПРОТИВОРЕЧИЕ (test-004-contradiction) -->
+          <div id="card-scene-004" class="bg-slate-950 rounded-xl border border-rose-500/60 shadow-lg overflow-hidden transition duration-300">
+            <!-- Callout Banner -->
+            <div class="bg-rose-950/70 border-b border-rose-900/80 px-4 py-2 flex items-center justify-between text-xs text-rose-200">
+              <span class="font-bold flex items-center gap-1.5">
+                <span>🔴 ПРАВИЛО 3: ПРОТИВОРЕЧИЕ МЕЖДУ ПОЛЯМИ</span>
+              </span>
+              <span class="text-[11px] font-mono bg-rose-900/60 px-2 py-0.5 rounded border border-rose-700">ТРЕБОВАНИЕ ТЗ: ОБА ЗНАЧЕНИЯ ЧЕРЕЗ (|)</span>
+            </div>
+
+            <div class="p-4 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="mono text-xs font-bold text-white bg-slate-900 px-2.5 py-1 rounded border border-slate-800">test-004-contradiction</span>
+                <span class="text-sm font-bold text-white">Оператор Call-центра</span>
+                <a href="https://trudvsem.ru/vacancy/card/test-004" target="_blank" class="text-xs text-indigo-400 hover:underline">Карточка на Trudvsem ↗</a>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/80 text-rose-300 border border-rose-800">Замечаний: 1</span>
+            </div>
+
+            <div class="p-4 space-y-3 bg-slate-900/50 border-t border-slate-800">
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 card-contradiction">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-400/20 text-rose-300 border border-rose-500/30">🔴 ПРОТИВОРЕЧИЕ</span>
+                  <span class="mono text-[10px] text-slate-400">Поля: employment | duty</span>
+                </div>
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Конфликт значений:</span>
+                  <div class="mt-1 flex items-center gap-2 font-semibold">
+                    <span class="px-2 py-1 bg-rose-950 text-rose-200 rounded border border-rose-700">Полная занятость</span>
+                    <span class="text-rose-400 font-bold">⚡ VS ⚡</span>
+                    <span class="px-2 py-1 bg-rose-950 text-rose-200 rounded border border-rose-700">Подработка на 2 часа в день</span>
+                  </div>
+                </div>
+                <div class="mt-1.5 text-xs text-slate-300"><strong>Суть проблемы:</strong> Противоречие: структурированное поле указывает на полную занятость/день, но в описании заявлена подработка/неполный день</div>
+                <div class="mt-2 text-xs bg-slate-900 border border-slate-800 p-2 rounded text-indigo-200">
+                  <strong class="text-indigo-400">💡 Уточнить у работодателя:</strong> Согласуйте условия: укажите, является ли вакансия основной полной занятостью или частичной подработкой.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. ИДЕАЛЬНАЯ ВАКАНСИЯ (test-001-ideal) -->
+          <div id="card-scene-001" class="bg-slate-950 rounded-xl border border-emerald-500/60 shadow-lg overflow-hidden">
+            <div class="p-4 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="mono text-xs font-bold text-white bg-slate-900 px-2.5 py-1 rounded border border-slate-800">test-001-ideal</span>
+                <span class="text-sm font-bold text-white">Инженер по метрологии</span>
+                <a href="https://trudvsem.ru/vacancy/card/test-001" target="_blank" class="text-xs text-indigo-400 hover:underline">Карточка на Trudvsem ↗</a>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-800">🟢 0 замечаний</span>
+            </div>
+            <div class="p-4 bg-emerald-950/20 border-t border-slate-800 text-xs text-emerald-400">
+              ✓ Все ключевые условия указаны корректно: должность, зарплата от 45000 до 66000 руб., конкретные обязанности, требования и фактический адрес.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Scene 3: Рабочий API 39 регион (2:00–2:40) -->
+      <div id="scene-3" class="scene hidden p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs font-semibold mb-2">
+            <span>🌐 Блок 4 (2:00 – 2:40)</span> • Рабочий режим с реальным API региона 39
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Интеграция с порталом «Работа в России» и дедупликация</h2>
+        </div>
+
+        <!-- Terminal Window Mockup -->
+        <div class="bg-black/90 rounded-xl border border-slate-800 p-4 mono text-xs sm:text-[13px] leading-relaxed shadow-inner overflow-x-auto flex-1 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+              <span class="text-slate-500 text-[11px] ml-2 font-semibold">api-runner — trudvsem-39</span>
+            </div>
+            <span class="text-[10px] text-cyan-400 font-bold">HTTP 200 OK</span>
+          </div>
+
+          <div class="space-y-1.5 text-slate-300">
+            <div class="text-cyan-400 font-bold">$ python -m src.main run --mode api</div>
+            <div class="text-slate-400">=== Запуск пайплайна (mode=api) ===</div>
+            <div class="text-slate-400">[API] Страница 1/2: GET http://opendata.trudvsem.ru/api/v1/vacancies/region/39?offset=0&count=25</div>
+            <div class="text-slate-300 pl-4">✓ Получено 25 вакансий с портала «Работа в России»</div>
+            <div class="text-slate-400">[API] Страница 2/2: GET http://opendata.trudvsem.ru/api/v1/vacancies/region/39?offset=25&count=25</div>
+            <div class="text-slate-300 pl-4">✓ Получено 25 вакансий (всего загружено: 50)</div>
+            <div class="pt-2 text-indigo-300">[Parser] Нормализация HTML и чистка сущностей... Готово.</div>
+            <div class="text-indigo-300">[Analyzer] Анализ вакансий Калининградской области...</div>
+            <div class="text-emerald-400 font-bold">[Scheduler & Deduplication] Дедупликация: 50 уникальных ID вакансий сохранены в latest.json</div>
+            <div class="text-slate-400">[Scheduler] Инициализирован cron "0 9 * * *" для фонового обновления. Fail-safe активен.</div>
+          </div>
+        </div>
+
+        <!-- Call to Action Banner to explore the 50 live vacancies -->
+        <div class="bg-gradient-to-r from-slate-900 to-indigo-950/80 border border-indigo-500/40 p-4 rounded-xl flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🌐</span>
+            <div>
+              <div class="text-sm font-bold text-white">Все 50 реальных вакансий Калининградской области загружены!</div>
+              <div class="text-xs text-slate-400">С портала «Работа в России» получены живые вакансии региона 39.</div>
+            </div>
+          </div>
+          <button onclick="selectDataset('api'); switchView('inspector');" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-1.5">
+            <span>📋 Открыть эти 50 вакансий в инспекторе ↗</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scene 4: Финал (2:40–2:50) -->
+      <div id="scene-4" class="scene hidden p-8 flex-1 flex flex-col justify-center items-center text-center space-y-6">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-4xl shadow-2xl shadow-indigo-500/30">
+          💎
+        </div>
+        <div class="max-w-xl space-y-2">
+          <h2 class="text-3xl font-extrabold text-white">Прозрачная вакансия</h2>
+          <p class="text-indigo-400 font-semibold">Делаем условия труда понятными каждому соискателю</p>
+          <p class="text-sm text-slate-400 pt-2">Команда КАНТКОД • Все критерии ТЗ выполнены на 100%</p>
+        </div>
+
+        <div class="flex items-center gap-4 pt-4">
+          <button onclick="goToStep(0)" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition">
+            🔄 Повторить презентацию
+          </button>
+          <button onclick="switchView('inspector')" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition">
+            📋 Перейти к карточкам отчёта
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Audio Player (Hidden) -->
+    <audio id="audio-player" class="hidden"></audio>
+  </section>
+
+  <!-- ================= VIEW 2: FULL REPORT INSPECTOR ================= -->
+  <section id="view-inspector" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+    
+    <!-- Dataset Title Banner -->
+    <div class="mb-4 bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <span class="text-xl" id="current-dataset-icon">📦</span>
+        <div>
+          <span class="text-xs font-bold text-white" id="current-dataset-title">Учебный датасет (4 вакансии для демонстрации правил)</span>
+          <p class="text-[11px] text-slate-400" id="current-dataset-desc">Включает примеры идеальной вакансии, пропуска с пустой цитатой, неоднозначности и противоречия.</p>
+        </div>
+      </div>
+      <button onclick="selectDataset(activeDataset === 'test' ? 'api' : 'test')" class="px-3 py-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-indigo-300 border border-slate-700 rounded-lg transition">
+        Переключить на: <span id="switch-dataset-label" class="font-bold underline">Реальные вакансии API (50)</span>
+      </button>
+    </div>
+
+    <!-- KPI Summary -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 shadow-sm">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Всего вакансий</div>
+        <div id="stat-total" class="text-2xl font-bold text-white mt-1">4</div>
+        <div id="stat-date" class="text-[11px] text-slate-500 mt-0.5 truncate">Учебный датасет</div>
+      </div>
+
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 shadow-sm">
+        <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Без замечаний</div>
+        <div id="stat-clean" class="text-2xl font-bold text-emerald-400 mt-1">1</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">Идеально заполнены</div>
+      </div>
+
+      <div class="bg-amber-950/30 p-4 rounded-xl border border-amber-900/50 shadow-sm">
+        <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider">🟡 Пропуски</div>
+        <div id="stat-omissions" class="text-2xl font-bold text-amber-400 mt-1">3</div>
+        <div class="text-[11px] text-amber-500/80 mt-0.5">Пустая цитата ""</div>
+      </div>
+
+      <div class="bg-indigo-950/30 p-4 rounded-xl border border-indigo-900/50 shadow-sm">
+        <div class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">🔵 Неоднозначности</div>
+        <div id="stat-ambiguities" class="text-2xl font-bold text-indigo-400 mt-1">4</div>
+        <div class="text-[11px] text-indigo-400/80 mt-0.5">Размытые термины</div>
+      </div>
+
+      <div class="bg-rose-950/30 p-4 rounded-xl border border-rose-900/50 shadow-sm col-span-2 sm:col-span-1">
+        <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider">🔴 Противоречия</div>
+        <div id="stat-contradictions" class="text-2xl font-bold text-rose-400 mt-1">1</div>
+        <div class="text-[11px] text-rose-400/80 mt-0.5">Два значения (|)</div>
+      </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 shadow-sm mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap gap-1.5" id="filter-buttons">
+        <button data-filter="all" class="filter-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white transition">Все (4)</button>
+        <button data-filter="with-issues" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-slate-400 hover:text-white transition">С дефектами</button>
+        <button data-filter="omission" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-amber-400 hover:bg-amber-950/40 transition">🟡 Пропуски</button>
+        <button data-filter="ambiguity" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-indigo-400 hover:bg-indigo-950/40 transition">🔵 Неоднозначности</button>
+        <button data-filter="contradiction" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-rose-400 hover:bg-rose-950/40 transition">🔴 Противоречия</button>
+        <button data-filter="clean" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-emerald-400 hover:bg-emerald-950/40 transition">🟢 Без замечаний</button>
+      </div>
+
+      <div class="relative w-full sm:w-64">
+        <input type="text" id="search-input" placeholder="Поиск по ID или названию..." class="w-full text-xs bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 pl-8 text-white focus:outline-none focus:border-indigo-500 transition">
+        <svg class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      </div>
+    </div>
+
+    <!-- Vacancies List -->
+    <div id="vacancies-container" class="space-y-4"></div>
+  </section>
+
+  <script>
+    // Два набора данных: Учебный и Реальный с API
+    const DATASETS = {
+      mock: {"generated_at": "2026-11-24T23:15:00.000000", "vacancies_count": 8, "vacancies": [{"id": "mock-001", "url": "https://trudvsem.ru/vacancy/card/mock-001", "issues": [], "job_name": "Бухгалтер по расчёту заработной платы"}, {"id": "mock-002", "url": "https://trudvsem.ru/vacancy/card/mock-002", "issues": [{"topic": "оплата", "field": "salary_min, salary_max, salary_text", "quote": "", "issue": "Размер оплаты не указан ни в одном поле.", "recommendation": "Укажите размер оплаты: оклад или диапазон в рублях и из чего она складывается."}, {"topic": "место работы", "field": "work_place", "quote": "", "issue": "Адрес или район выполнения работы не указан; неясно, откуда начинаются выезды.", "recommendation": "Укажите адрес базы, с которой начинается рабочий день, и территорию доставки."}], "job_name": "Водитель-экспедитор категории B"}, {"id": "mock-003", "url": "https://trudvsem.ru/vacancy/card/mock-003", "issues": [{"topic": "график", "field": "schedule", "quote": "Гибкий график", "issue": "Не указано, что значит «гибкий график»: рабочие дни, часы, обязательное время присутствия.", "recommendation": "Уточните, в какие дни и часы сотрудник должен быть на связи или на месте и кто определяет график."}, {"topic": "оплата", "field": "salary_text", "quote": "по договорённости", "issue": "Размер оплаты не назван, суммы или диапазона нет ни в одном поле.", "recommendation": "Укажите оклад или диапазон оплаты, а также переменную часть, если она есть."}, {"topic": "обязанности", "field": "duty", "quote": "разные задачи по поручению руководителя", "issue": "Формулировка не говорит, какие именно задачи входят в работу.", "recommendation": "Перечислите основные задачи и порядок их постановки."}], "job_name": "Менеджер по работе с клиентами"}, {"id": "mock-004", "url": "https://trudvsem.ru/vacancy/card/mock-004", "issues": [{"topic": "тип занятости", "field": "employment vs duty", "quote": "Полная занятость | Подработка на 2 часа в день", "issue": "Тип занятости «Полная занятость» противоречит описанию, где указана подработка на 2 часа в день.", "recommendation": "Уточните, это полная или частичная занятость, и сколько часов в день предполагает работа."}], "job_name": "Кладовщик"}, {"id": "mock-005", "url": "https://trudvsem.ru/vacancy/card/mock-005", "issues": [{"topic": "должность", "field": "job_name", "quote": "Специалист", "issue": "Название не говорит, по какому направлению нужен специалист.", "recommendation": "Уточните профиль должности, например: специалист по закупкам, по кадрам."}, {"topic": "обязанности", "field": "duty", "quote": "", "issue": "Обязанности не описаны.", "recommendation": "Опишите основные обязанности сотрудника."}, {"topic": "требования", "field": "requirements", "quote": "", "issue": "Требования к образованию, опыту и навыкам не указаны.", "recommendation": "Укажите требования к образованию, опыту и обязательным навыкам."}], "job_name": "Специалист"}, {"id": "mock-006", "url": "https://trudvsem.ru/vacancy/card/mock-006", "issues": [{"topic": "график", "field": "schedule", "quote": "Сменный график", "issue": "Не указано, как чередуются смены: их длительность, время начала и число рабочих дней подряд.", "recommendation": "Уточните схему смен (например, 2/2 или сутки через трое), время начала и окончания смены."}], "job_name": "Охранник"}, {"id": "mock-007", "url": "https://trudvsem.ru/vacancy/card/mock-007", "issues": [], "job_name": "Электромонтёр по ремонту электрооборудования"}, {"id": "mock-008", "url": "https://trudvsem.ru/vacancy/card/mock-008", "issues": [{"topic": "оплата", "field": "salary_text vs duty", "quote": "от 20000 до 25000 руб. | Заработная плата 60 000 рублей в месяц", "issue": "Оплата в поле зарплаты (20–25 тыс. руб.) не совпадает с суммой в описании (60 000 руб.).", "recommendation": "Уточните, какая сумма верна и от чего зависит размер оплаты."}], "job_name": "Уборщик служебных помещений"}]},
+      test: {"generated_at": "2026-11-24T16:26:18.402370", "vacancies_count": 4, "vacancies": [{"id": "test-001-ideal", "job_name": "Инженер по метрологии", "url": "https://trudvsem.ru/vacancy/card/test-001", "issues": []}, {"id": "test-002-missing", "job_name": "Помощник повара", "url": "https://trudvsem.ru/vacancy/card/test-002", "issues": [{"topic": "требования", "field": "requirements", "quote": "", "issue": "В вакансии не указаны требования к кандидату (образование, стаж, профессиональные навыки)", "recommendation": "Уточните обязательные требования: уровень образования, минимальный опыт работы и квалификацию."}, {"topic": "оплата", "field": "salary", "quote": "", "issue": "Не указан размер заработной платы, тарифная ставка или диапазон оклада", "recommendation": "Укажите базовый должностной оклад или вилку зарплаты (до вычета налогов или на руки)."}, {"topic": "место работы", "field": "location", "quote": "", "issue": "Не указан точный адрес или населенный пункт фактического места работы", "recommendation": "Укажите населенный пункт и улицу/район расположения рабочего места."}]}, {"id": "test-003-ambiguous", "job_name": "Менеджер по продажам", "url": "https://trudvsem.ru/vacancy/card/test-003", "issues": [{"topic": "оплата", "field": "salary", "quote": "достойная оплата", "issue": "Субъективная формулировка без указания конкретного размера или вилки оклада", "recommendation": "Уточните гарантированный размер оплаты труда (окладную часть) в числовом выражении."}, {"topic": "график", "field": "schedule", "quote": "Гибкий график", "issue": "Формулировка «гибкий график» не раскрывает обязательные часы присутствия и количество смен", "recommendation": "Уточните формат гибкого графика: обязательные часы на связи, плавающее начало дня или полностью свободный режим."}, {"topic": "обязанности", "field": "duty", "quote": "Разные задачи в отделе продаж", "issue": "Размытое описание обязанностей не дает соискателю представления о реальном объёме работы", "recommendation": "Конкретизируйте основные функциональные направления и ключевые зоны ответственности."}, {"topic": "требования", "field": "requirements", "quote": "Коммуникабельность.", "issue": "Указаны только общие личностные качества без профессиональных требований", "recommendation": "Укажите профильные навыки, требуемый уровень образования и практический опыт."}]}, {"id": "test-004-contradiction", "job_name": "Оператор Call-центра", "url": "https://trudvsem.ru/vacancy/card/test-004", "issues": [{"topic": "тип занятости", "field": "employment | duty", "quote": "Полная занятость | Подработка на 2 часа в день", "issue": "Противоречие: структурированное поле указывает на полную занятость/день, но в описании указана подработка/неполный день", "recommendation": "Согласуйте условия: укажите, является ли вакансия основной полной занятостью или частичной подработкой."}]}]},
+      api: {"generated_at": "2026-11-24T18:24:47.539315", "vacancies_count": 50, "vacancies": [{"id": "dfdfe7c6-1b0a-11ee-9f4d-9586bb63c653", "url": "https://trudvsem.ru/vacancy/card/1023901018570/dfdfe7c6-1b0a-11ee-9f4d-9586bb63c653", "job_name": "Инженер по метрологии", "issues": []}, {"id": "1711d0c8-e284-11f1-8d1a-453232bb56a3", "url": "https://trudvsem.ru/vacancy/card/1023902296307/1711d0c8-e284-11f1-8d1a-453232bb56a3", "job_name": "Помощник воспитателя", "issues": []}, {"id": "0dc1c4a3-a6b5-11f1-b4b9-312b1e80675a", "url": "https://trudvsem.ru/vacancy/card/1023902296307/0dc1c4a3-a6b5-11f1-b4b9-312b1e80675a", "job_name": "Уборщик территорий", "issues": []}, {"id": "333e4e78-85a7-11f1-be40-f90a836cd168", "url": "https://trudvsem.ru/vacancy/card/1023902296307/333e4e78-85a7-11f1-be40-f90a836cd168", "job_name": "Кухонный рабочий", "issues": []}, {"id": "ebb27e68-e284-11f1-bbbe-cd6f87e05b83", "url": "https://trudvsem.ru/vacancy/card/1023902296307/ebb27e68-e284-11f1-bbbe-cd6f87e05b83", "job_name": "Помощник воспитателя", "issues": []}, {"id": "460f1c08-600e-11f1-a885-41d00752341b", "url": "https://trudvsem.ru/vacancy/card/1023902296307/460f1c08-600e-11f1-a885-41d00752341b", "job_name": "повар", "issues": []}, {"id": "759c1368-8fed-11f1-b546-0def9408a49f", "url": "https://trudvsem.ru/vacancy/card/1023902296307/759c1368-8fed-11f1-b546-0def9408a49f", "job_name": "Помощник воспитателя", "issues": []}, {"id": "ada414f8-dda5-11f1-8798-75bc1c1c1094", "url": "https://trudvsem.ru/vacancy/card/1217700536063/ada414f8-dda5-11f1-8798-75bc1c1c1094", "job_name": "Продавец-кассир К-9", "issues": []}, {"id": "59c75ca5-5351-11f1-bb82-7f8bb357025f", "url": "https://trudvsem.ru/vacancy/card/1023901014323/59c75ca5-5351-11f1-bb82-7f8bb357025f", "job_name": "Методист", "issues": []}, {"id": "f53dc178-6e20-11f1-a0ef-714ad8f097f6", "url": "https://trudvsem.ru/vacancy/card/1023901014323/f53dc178-6e20-11f1-a0ef-714ad8f097f6", "job_name": "куратор цифровой трансформации", "issues": []}, {"id": "c20c87f8-b105-11f1-9b06-338bb3104f83", "url": "https://trudvsem.ru/vacancy/card/1023901014323/c20c87f8-b105-11f1-9b06-338bb3104f83", "job_name": "Методист (информатика)", "issues": []}, {"id": "9a583c38-b106-11f1-9b06-338bb3104f83", "url": "https://trudvsem.ru/vacancy/card/1023901014323/9a583c38-b106-11f1-9b06-338bb3104f83", "job_name": "Методист по технологии", "issues": []}, {"id": "efcfae38-b0f4-11f1-9b06-338bb3104f83", "url": "https://trudvsem.ru/vacancy/card/1023901014323/efcfae38-b0f4-11f1-9b06-338bb3104f83", "job_name": "методист в центр непрерывного повышения профессионального мастерства педагогических работников", "issues": []}, {"id": "de5ae404-e7ed-11f1-97a0-6b8e97d8bf9c", "url": "https://trudvsem.ru/vacancy/card/5147746474134/de5ae404-e7ed-11f1-97a0-6b8e97d8bf9c", "job_name": "Электромеханик по средствам автоматики и приборам технологического оборудования", "issues": [{"topic": "требования", "field": "requirements", "quote": "", "issue": "В вакансии не указаны требования к кандидату (образование, стаж, профессиональные навыки)", "recommendation": "Уточните обязательные требования: уровень образования, минимальный опыт работы и квалификацию."}]}, {"id": "7d9bb2d8-e7ec-11f1-a199-e91de5251cd9", "url": "https://trudvsem.ru/vacancy/card/1023902274406/7d9bb2d8-e7ec-11f1-a199-e91de5251cd9", "job_name": "Грузчик-комплектовщик на склад готовой продукции", "issues": []}, {"id": "a5970f48-7132-11f1-8093-61b073a087e6", "url": "https://trudvsem.ru/vacancy/card/1023901863754/a5970f48-7132-11f1-8093-61b073a087e6", "job_name": "преподаватель-организатор основ безопасности и защиты Родины", "issues": []}, {"id": "132abf38-e7ed-11f1-8931-dd33cc8cc9df", "url": "https://trudvsem.ru/vacancy/card/1123926048146/132abf38-e7ed-11f1-8931-dd33cc8cc9df", "job_name": "Раздатчик", "issues": []}, {"id": "0cb96210-e7ec-11f1-ba9d-976d66553d64", "url": "https://trudvsem.ru/vacancy/card/1183926009695/0cb96210-e7ec-11f1-ba9d-976d66553d64", "job_name": "Заведующий производством (шеф-повар)", "issues": []}, {"id": "ed297028-76da-11f1-a323-9d73f5e76293", "url": "https://trudvsem.ru/vacancy/card/1023901863754/ed297028-76da-11f1-a323-9d73f5e76293", "job_name": "учитель физики", "issues": []}, {"id": "bef177c8-76da-11f1-9a9e-6f4b77459deb", "url": "https://trudvsem.ru/vacancy/card/1023901863754/bef177c8-76da-11f1-9a9e-6f4b77459deb", "job_name": "Учитель математики", "issues": []}, {"id": "733b52c8-970e-11f1-882e-0dd886e483c8", "url": "https://trudvsem.ru/vacancy/card/1023901863754/733b52c8-970e-11f1-882e-0dd886e483c8", "job_name": "Младший воспитатель", "issues": []}, {"id": "1ba5c9a0-d453-11f1-866f-d9b02784358d", "url": "https://trudvsem.ru/vacancy/card/1123926048146/1ba5c9a0-d453-11f1-866f-d9b02784358d", "job_name": "Заведующий производством", "issues": []}, {"id": "3e58b118-d453-11f1-8654-9feb112f5656", "url": "https://trudvsem.ru/vacancy/card/1123926048146/3e58b118-d453-11f1-8654-9feb112f5656", "job_name": "Раздатчик", "issues": []}, {"id": "0b8dea78-a21c-11f1-b89a-011db2a3ebbd", "url": "https://trudvsem.ru/vacancy/card/1123926048146/0b8dea78-a21c-11f1-b89a-011db2a3ebbd", "job_name": "Пекарь", "issues": []}, {"id": "6c0d48f8-a21c-11f1-805f-61e527cd6ba8", "url": "https://trudvsem.ru/vacancy/card/1123926048146/6c0d48f8-a21c-11f1-805f-61e527cd6ba8", "job_name": "Повар", "issues": []}, {"id": "29d75b23-866e-11f1-ae5d-9f41f4fa76e3", "url": "https://trudvsem.ru/vacancy/card/1123926048146/29d75b23-866e-11f1-ae5d-9f41f4fa76e3", "job_name": "Повар", "issues": []}, {"id": "685146f0-e289-11f1-af87-79fdeb0404fd", "url": "https://trudvsem.ru/vacancy/card/1123926048146/685146f0-e289-11f1-af87-79fdeb0404fd", "job_name": "Кухонный рабочий 1311-Р", "issues": []}, {"id": "66f7f2f0-d61c-11f1-9268-1d9c4defdc72", "url": "https://trudvsem.ru/vacancy/card/1023902057860/66f7f2f0-d61c-11f1-9268-1d9c4defdc72", "job_name": "Кладовщик", "issues": []}, {"id": "f0f53266-cd43-11f1-b0a1-fd885623013e", "url": "https://trudvsem.ru/vacancy/card/1023902057860/f0f53266-cd43-11f1-b0a1-fd885623013e", "job_name": "Няня", "issues": []}, {"id": "35334e08-20f0-11f0-b6d4-cb26dff57dd7", "url": "https://trudvsem.ru/vacancy/card/1023902057860/35334e08-20f0-11f0-b6d4-cb26dff57dd7", "job_name": "Официант (бармен)", "issues": []}, {"id": "d0c0b1c5-336b-11ed-a531-791a818bdadb", "url": "https://trudvsem.ru/vacancy/card/1023902057860/d0c0b1c5-336b-11ed-a531-791a818bdadb", "job_name": "Инструктор по лечебной физкультуре", "issues": []}, {"id": "8af9d618-242e-11f0-b6d4-cb26dff57dd7", "url": "https://trudvsem.ru/vacancy/card/1023902057860/8af9d618-242e-11f0-b6d4-cb26dff57dd7", "job_name": "уборщик помещений", "issues": []}, {"id": "03996648-6e06-11f1-ac73-1996bddbbd0d", "url": "https://trudvsem.ru/vacancy/card/1023902057860/03996648-6e06-11f1-ac73-1996bddbbd0d", "job_name": "Заведующий службы питания", "issues": []}, {"id": "7a87d788-bee0-11f0-9d5a-9d9dadc64e25", "url": "https://trudvsem.ru/vacancy/card/1023902057860/7a87d788-bee0-11f0-9d5a-9d9dadc64e25", "job_name": "Медицинская сестра палатная/постовая", "issues": []}, {"id": "69bdb8b8-752f-11f1-8cac-592f72d140bc", "url": "https://trudvsem.ru/vacancy/card/1023902057860/69bdb8b8-752f-11f1-8cac-592f72d140bc", "job_name": "Медицинская сестра приемного отделения", "issues": []}, {"id": "c5909c38-503a-11f1-83d8-81da717edaeb", "url": "https://trudvsem.ru/vacancy/card/1023902057860/c5909c38-503a-11f1-83d8-81da717edaeb", "job_name": "Инструктор-методист по лечебной физкультуре", "issues": []}, {"id": "4eecaf18-38bb-11f1-8046-9d3f086ad43e", "url": "https://trudvsem.ru/vacancy/card/1023902057860/4eecaf18-38bb-11f1-8046-9d3f086ad43e", "job_name": "Кухонный рабочий", "issues": []}, {"id": "91bee905-117f-11ed-b7fe-ed9942adf613", "url": "https://trudvsem.ru/vacancy/card/1023902057860/91bee905-117f-11ed-b7fe-ed9942adf613", "job_name": "Медицинская сестра палатная", "issues": []}, {"id": "95428d18-7531-11f1-b25d-8f333dbde8a0", "url": "https://trudvsem.ru/vacancy/card/1023902057860/95428d18-7531-11f1-b25d-8f333dbde8a0", "job_name": "Младшая медицинская сестра по уходу за больными", "issues": []}, {"id": "c3be3018-752f-11f1-b25d-8f333dbde8a0", "url": "https://trudvsem.ru/vacancy/card/1023902057860/c3be3018-752f-11f1-b25d-8f333dbde8a0", "job_name": "Инструктор-методист по лечебной физкультуре", "issues": []}, {"id": "ea514c78-71f8-11f0-b34a-e7d0d2cf29b1", "url": "https://trudvsem.ru/vacancy/card/1023902057860/ea514c78-71f8-11f0-b34a-e7d0d2cf29b1", "job_name": "Уборщик помещений", "issues": []}, {"id": "e834dd08-752e-11f1-ba13-0df010550bdb", "url": "https://trudvsem.ru/vacancy/card/1023902057860/e834dd08-752e-11f1-ba13-0df010550bdb", "job_name": "Медицинская сестра палатная", "issues": []}, {"id": "e1800c08-75e2-11f1-aa9f-710e11d7f6c9", "url": "https://trudvsem.ru/vacancy/card/1023902057860/e1800c08-75e2-11f1-aa9f-710e11d7f6c9", "job_name": "Врач-травматолог-ортопед", "issues": []}, {"id": "4fab1c58-7530-11f1-b25d-8f333dbde8a0", "url": "https://trudvsem.ru/vacancy/card/1023902057860/4fab1c58-7530-11f1-b25d-8f333dbde8a0", "job_name": "Инструктор по лечебной физкультуре", "issues": []}, {"id": "1becff48-7531-11f1-b25d-8f333dbde8a0", "url": "https://trudvsem.ru/vacancy/card/1023902057860/1becff48-7531-11f1-b25d-8f333dbde8a0", "job_name": "Санитарка / Санитар", "issues": []}, {"id": "0746da88-7530-11f1-ba13-0df010550bdb", "url": "https://trudvsem.ru/vacancy/card/1023902057860/0746da88-7530-11f1-ba13-0df010550bdb", "job_name": "Медицинская сестра по физиотерапии", "issues": []}, {"id": "ad66ee08-7530-11f1-8cac-592f72d140bc", "url": "https://trudvsem.ru/vacancy/card/1023902057860/ad66ee08-7530-11f1-8cac-592f72d140bc", "job_name": "Медицинская сестра по массажу", "issues": []}, {"id": "dca29807-44a2-11f1-8e97-0164d64c91c4", "url": "https://trudvsem.ru/vacancy/card/1023901002905/dca29807-44a2-11f1-8e97-0164d64c91c4", "job_name": "бухгалтер по зарплате", "issues": []}, {"id": "a030dfe8-242a-11f1-ba68-e7fd5bf5650b", "url": "https://trudvsem.ru/vacancy/card/1183926009695/a030dfe8-242a-11f1-ba68-e7fd5bf5650b", "job_name": "Повар", "issues": []}, {"id": "c09b2588-e7eb-11f1-ba9d-976d66553d64", "url": "https://trudvsem.ru/vacancy/card/1023902274406/c09b2588-e7eb-11f1-ba9d-976d66553d64", "job_name": "Мойщик, уборщик производственных помещений", "issues": []}]}
+    };
+
+    let activeDataset = 'test';
+    let currentReport = DATASETS.test;
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    let currentStep = 0;
+    let isPlaying = false;
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    let audioEnabled = true;
+
+    const STEPS_DATA = [
+      { id: 0, title: "0:00–0:35 • Архитектура и структура репозитория", duration: 36, audio: "data/voiceover/block1_architecture.mp3" },
+      { id: 1, title: "0:30–1:15 • Запуск проверочного режима (Local)", duration: 45, audio: "data/voiceover/block2_local_run.mp3" },
+      { id: 2, title: "1:15–2:00 • Разбор отчёта (Пропуск, Неоднозначность, Противоречие)", duration: 45, audio: "data/voiceover/block3_report_ui.mp3" },
+      { id: 3, title: "2:00–2:40 • Рабочий режим API региона 39 и дедупликация", duration: 40, audio: "data/voiceover/block4_api_schedule.mp3" },
+      { id: 4, title: "2:40–2:50 • Финал и итоги", duration: 10, audio: "" }
+    ];
+
+    function selectDataset(type) {
+      activeDataset = type;
+      currentReport = DATASETS[type];
+      
+      const testBtn = document.getElementById('dataset-test-btn');
+      const apiBtn = document.getElementById('dataset-api-btn');
+      const icon = document.getElementById('current-dataset-icon');
+      const title = document.getElementById('current-dataset-title');
+      const desc = document.getElementById('current-dataset-desc');
+      const switchLbl = document.getElementById('switch-dataset-label');
+
+      const mockBtn = document.getElementById('dataset-mock-btn');
+      
+      [mockBtn, testBtn, apiBtn].forEach(b => {
+        if (b) b.className = "px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5";
+      });
+
+      if (type === 'mock') {
+        if (mockBtn) mockBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition flex items-center gap-1.5";
+        icon.innerText = "🎯";
+        title.innerText = "Эталонный мок-отчёт команды (8 вакансий: mock-001 ... mock-008)";
+        desc.innerText = "Набор mock_vacancies.json и mock_expected_report.json из репозитория: пропуски, размытый график, квоты и коллизии.";
+        switchLbl.innerText = "Реальные с Trudvsem (50)";
+      } else if (type === 'test') {
+        if (testBtn) testBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition flex items-center gap-1.5";
+        icon.innerText = "📦";
+        title.innerText = "Учебный датасет видеоролика (4 вакансии для демонстрации стандартов ТЗ)";
+        desc.innerText = "Примеры идеальной вакансии, пропуска с пустой цитатой, неоднозначности с цитатой и противоречия через разделитель.";
+        switchLbl.innerText = "Мок команды (8)";
+      } else {
+        if (apiBtn) apiBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-cyan-600 text-white shadow transition flex items-center gap-1.5";
+        icon.innerText = "🌐";
+        title.innerText = "Реальные вакансии с сайта «Работа в России» (50 вакансий Калининградской области)";
+        desc.innerText = "Загружены по HTTP-протоколу через API региона 39 с пагинацией и дедупликацией.";
+        switchLbl.innerText = "Мок команды (8)";
+      }
+
+      renderInspector();
+    }
+
+    function switchView(view) {
+      if (view === 'demo') {
+        document.getElementById('view-demo').classList.remove('hidden');
+        document.getElementById('view-inspector').classList.add('hidden');
+        document.getElementById('tab-demo').className = "px-3.5 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition";
+        document.getElementById('tab-inspector').className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+      } else {
+        document.getElementById('view-demo').classList.add('hidden');
+        document.getElementById('view-inspector').classList.remove('hidden');
+        document.getElementById('tab-inspector').className = "px-3.5 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow transition";
+        document.getElementById('tab-demo').className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+        renderInspector();
+      }
+    }
+
+    function focusCard(cardId) {
+      const el = document.getElementById(cardId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('spotlight-pulse');
+        setTimeout(() => el.classList.remove('spotlight-pulse'), 2500);
+      }
+    }
+
+    function goToStep(stepIndex) {
+      currentStep = stepIndex;
+      document.querySelectorAll('.scene').forEach(sc => sc.classList.add('hidden'));
+      const activeScene = document.getElementById(`scene-${stepIndex}`);
+      if (activeScene) activeScene.classList.remove('hidden');
+
+      document.querySelectorAll('.step-btn').forEach((btn, idx) => {
+        if (idx === stepIndex) {
+          btn.className = "step-btn px-2.5 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white transition";
+        } else {
+          btn.className = "step-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition";
+        }
+      });
+
+      document.getElementById('step-title').innerText = STEPS_DATA[stepIndex].title;
+
+      // Озвучка
+      const audio = document.getElementById('audio-player');
+      if (STEPS_DATA[stepIndex].audio && audioEnabled && isPlaying) {
+        audio.src = STEPS_DATA[stepIndex].audio;
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log("Audio play blocked by browser:", e));
+      } else if (!STEPS_DATA[stepIndex].audio && stepIndex === 4 && isPlaying) {
+        // Финальный слайд без аудио: показываем 8 секунд и завершаем
+        setTimeout(() => {
+          if (isPlaying && currentStep === 4) {
+            togglePlay();
+          }
+        }, 8000);
+      }
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      const btn = document.getElementById('btn-play');
+      if (isPlaying) {
+        btn.innerText = '⏸';
+        btn.className = "w-10 h-10 rounded-xl bg-amber-600 hover:bg-amber-500 text-white flex items-center justify-center font-bold text-lg transition shadow-md shadow-amber-600/30";
+        startAutoPlay();
+      } else {
+        btn.innerText = '▶';
+        btn.className = "w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center font-bold text-lg transition shadow-md shadow-indigo-600/30";
+        stopAutoPlay();
+      }
+    }
+
+    function startAutoPlay() {
+      if (currentStep >= 4) {
+        currentStep = 0;
+        secondsElapsed = 0;
+      }
+      goToStep(currentStep);
+      
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        updateTimerDisplay();
+
+        // Если озвучка выключена (fallback тайминги)
+        if (!audioEnabled) {
+          if (secondsElapsed === 28) goToStep(1);
+          else if (secondsElapsed === 67) goToStep(2);
+          else if (secondsElapsed === 108) goToStep(3);
+          else if (secondsElapsed === 142) goToStep(4);
+          else if (secondsElapsed >= 152) {
+            togglePlay();
+          }
+        }
+      }, 1000);
+    }
+
+    function stopAutoPlay() {
+      clearInterval(timerInterval);
+      const audio = document.getElementById('audio-player');
+      audio.pause();
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+      const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+      document.getElementById('demo-time').innerText = `${mins}:${secs}`;
+    }
+
+    // Слушатель завершения аудио: естественный переход сразу после слов диктора
+    document.addEventListener('DOMContentLoaded', () => {
+      const audio = document.getElementById('audio-player');
+      audio.addEventListener('ended', () => {
+        if (isPlaying) {
+          // Комфортная естественная пауза 1.2 секунды после завершения речи диктора
+          setTimeout(() => {
+            if (isPlaying && currentStep < 4) {
+              goToStep(currentStep + 1);
+            }
+          }, 1200);
+        }
+      });
+    });
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const audio = document.getElementById('audio-player');
+      if (!audioEnabled) {
+        audio.pause();
+        document.getElementById('audio-icon').innerText = '🔇';
+        document.getElementById('audio-status').innerText = 'Озвучка: Выкл';
+      } else {
+        document.getElementById('audio-icon').innerText = '🔊';
+        document.getElementById('audio-status').innerText = 'Озвучка: Вкл';
+      }
+    }
+
+    // ================= INSPECTOR RENDERING =================
+    function getIssueType(issue) {
+      if (!issue.quote || issue.quote.trim() === '') return 'omission';
+      if (issue.quote.includes('|') || issue.field.includes('|') || (issue.issue && issue.issue.toLowerCase().includes('противореч'))) return 'contradiction';
+      return 'ambiguity';
+    }
+
+    function renderInspector() {
+      if (!currentReport || !currentReport.vacancies) return;
+
+      const vacancies = currentReport.vacancies;
+      let totalIssues = 0;
+      let omissionCount = 0;
+      let ambiguityCount = 0;
+      let contradictionCount = 0;
+      let cleanCount = 0;
+
+      vacancies.forEach(v => {
+        const issues = v.issues || [];
+        if (issues.length === 0) {
+          cleanCount++;
+        } else {
+          totalIssues += issues.length;
+          issues.forEach(i => {
+            const t = getIssueType(i);
+            if (t === 'omission') omissionCount++;
+            else if (t === 'ambiguity') ambiguityCount++;
+            else if (t === 'contradiction') contradictionCount++;
+          });
+        }
+      });
+
+      document.getElementById('stat-total').innerText = vacancies.length;
+      document.getElementById('stat-clean').innerText = cleanCount;
+      document.getElementById('stat-omissions').innerText = omissionCount;
+      document.getElementById('stat-ambiguities').innerText = ambiguityCount;
+      document.getElementById('stat-contradictions').innerText = contradictionCount;
+      document.getElementById('stat-date').innerText = activeDataset === 'test' ? 'Учебный JSON' : 'Trudvsem API (39 регион)';
+
+      const allBtn = document.querySelector('button[data-filter="all"]');
+      if (allBtn) allBtn.innerText = `Все (${vacancies.length})`;
+
+      const filtered = vacancies.filter(v => {
+        const issues = v.issues || [];
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchId = (v.id || '').toLowerCase().includes(q);
+          const matchTitle = (v.job_name || '').toLowerCase().includes(q);
+          const matchIssue = issues.some(i => 
+            (i.topic || '').toLowerCase().includes(q) ||
+            (i.field || '').toLowerCase().includes(q) ||
+            (i.issue || '').toLowerCase().includes(q) ||
+            (i.quote || '').toLowerCase().includes(q)
+          );
+          if (!matchId && !matchTitle && !matchIssue) return false;
+        }
+
+        if (activeFilter === 'clean') return issues.length === 0;
+        if (activeFilter === 'with-issues') return issues.length > 0;
+        if (activeFilter === 'omission') return issues.some(i => getIssueType(i) === 'omission');
+        if (activeFilter === 'ambiguity') return issues.some(i => getIssueType(i) === 'ambiguity');
+        if (activeFilter === 'contradiction') return issues.some(i => getIssueType(i) === 'contradiction');
+        return true;
+      });
+
+      const container = document.getElementById('vacancies-container');
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-slate-950 rounded-xl border border-slate-800 p-12 text-center text-slate-500">
+            <div class="text-3xl mb-2">🔍</div>
+            <p class="font-medium text-sm">Вакансий по выбранным фильтрам не найдено</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(v => {
+        const issues = v.issues || [];
+        const isClean = issues.length === 0;
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-950 rounded-xl border border-slate-800 shadow-sm overflow-hidden transition hover:border-slate-700";
+
+        let issuesHtml = '';
+        if (isClean) {
+          issuesHtml = `
+            <div class="p-3.5 bg-emerald-950/20 border-t border-slate-800/80 flex items-center gap-3 text-emerald-400 text-xs">
+              <span class="text-lg">✅</span>
+              <div>
+                <p class="font-bold text-emerald-300">Идеальная прозрачность условий</p>
+                <p class="text-slate-400 text-[11px] mt-0.5">Должность, оплата, обязанности, требования и место работы указаны без дефектов.</p>
+              </div>
+            </div>
+          `;
+        } else {
+          issuesHtml = `<div class="p-4 space-y-3 bg-slate-900/40 border-t border-slate-800">`;
+          
+          issues.forEach(iss => {
+            const type = getIssueType(iss);
+            let badgeText = 'Замечание';
+            let badgeBg = 'bg-slate-800 text-slate-300 border-slate-700';
+            let cardBorder = 'border-l-4 border-slate-600';
+            let quoteHtml = '';
+
+            if (type === 'omission') {
+              badgeText = '🟡 Пропуск';
+              badgeBg = 'bg-amber-400/20 text-amber-300 border-amber-500/30';
+              cardBorder = 'card-omission';
+              quoteHtml = `
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Цитата из источника:</span>
+                  <span class="mono inline-block px-2 py-0.5 ml-1 text-[11px] text-amber-300 bg-amber-950/60 rounded border border-amber-800/80 italic font-semibold">
+                    [ пустая цитата — сведения не указаны работодателем ]
+                  </span>
+                </div>
+              `;
+            } else if (type === 'contradiction') {
+              badgeText = '🔴 Противоречие';
+              badgeBg = 'bg-rose-400/20 text-rose-300 border-rose-500/30';
+              cardBorder = 'card-contradiction';
+              const parts = iss.quote.split('|').map(p => p.trim());
+              quoteHtml = `
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Конфликт значений:</span>
+                  <div class="mt-1 flex flex-wrap items-center gap-1.5 font-semibold text-xs">
+                    <span class="px-2 py-0.5 bg-rose-950 text-rose-200 rounded border border-rose-800">${parts[0] || 'Значение 1'}</span>
+                    <span class="text-rose-400 font-bold">⚡ VS ⚡</span>
+                    <span class="px-2 py-0.5 bg-rose-950 text-rose-200 rounded border border-rose-800">${parts[1] || 'Значение 2'}</span>
+                  </div>
+                </div>
+              `;
+            } else {
+              badgeText = '🔵 Неоднозначность';
+              badgeBg = 'bg-indigo-400/20 text-indigo-300 border-indigo-500/30';
+              cardBorder = 'card-ambiguity';
+              quoteHtml = `
+                <div class="mt-2 text-xs">
+                  <span class="text-slate-400">Цитата:</span>
+                  <span class="mono font-semibold text-indigo-300 bg-indigo-950/80 px-2 py-0.5 rounded border border-indigo-800/60">
+                    «${iss.quote}»
+                  </span>
+                </div>
+              `;
+            }
+
+            issuesHtml += `
+              <div class="bg-slate-950 p-3.5 rounded-lg border border-slate-800 ${cardBorder}">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 text-[11px] font-bold rounded uppercase tracking-wide border ${badgeBg}">
+                      ${badgeText}
+                    </span>
+                    <span class="text-xs font-semibold text-slate-300">Тема: <span class="capitalize text-white">${iss.topic}</span></span>
+                  </div>
+                  <span class="mono text-[10px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Поле: ${iss.field}</span>
+                </div>
+
+                ${quoteHtml}
+
+                <div class="mt-2 text-xs text-slate-300">
+                  <strong class="text-white">Суть проблемы:</strong> ${iss.issue}
+                </div>
+
+                <div class="mt-2 text-xs bg-slate-900 border border-slate-800 p-2.5 rounded text-indigo-200 flex items-start gap-2">
+                  <span class="text-indigo-400 font-bold">💡 Уточнить:</span>
+                  <span class="font-medium">${iss.recommendation}</span>
+                </div>
+              </div>
+            `;
+          });
+
+          issuesHtml += `</div>`;
+        }
+
+        card.innerHTML = `
+          <div class="p-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="mono text-xs font-bold text-white bg-slate-900 px-2.5 py-1 rounded border border-slate-800">
+                ${v.id}
+              </span>
+              <span class="text-sm font-bold text-white">${v.job_name || '(без названия)'}</span>
+              ${v.url ? `<a href="${v.url}" target="_blank" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium inline-flex items-center gap-1 hover:underline">
+                Карточка на Trudvsem ↗
+              </a>` : ''}
+            </div>
+
+            <div>
+              ${isClean ? 
+                `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800">
+                  🟢 Идеально (0 дефектов)
+                </span>` : 
+                `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-950/80 text-rose-400 border border-rose-800">
+                  Замечаний: ${issues.length}
+                </span>`
+              }
+            </div>
+          </div>
+          ${issuesHtml}
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      goToStep(0);
+      selectDataset('mock');
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => {
+            b.className = "filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-slate-400 hover:text-white transition";
+          });
+          btn.className = "filter-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white transition";
+          activeFilter = btn.dataset.filter;
+          renderInspector();
+        });
+      });
+
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderInspector();
+      });
+    });
+  </script>
+</body>
+</html>
