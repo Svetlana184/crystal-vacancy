@@ -6,14 +6,17 @@ def fetch_vacancies() -> List[Dict[str, Any]]:
     """
     Клиент API «Работа в России».
     ВАЖНО: API работает ТОЛЬКО по HTTP.
+    В API trudvsem.ru:
+      - limit: количество вакансий на странице (макс. 100)
+      - offset: номер страницы (0, 1, 2...)
     """
     api_cfg = config.api
     base_url = api_cfg.url.replace("https://", "http://")
     all_vacancies = []
 
     for page in range(api_cfg.pages_limit):
-        offset = page * api_cfg.page_size
-        full_url = f"{base_url}?region={api_cfg.region}&offset={offset}&count={api_cfg.page_size}"
+        # В API trudvsem offset — это индекс страницы (0, 1, 2...), а размер страницы задаётся через limit
+        full_url = f"{base_url}?offset={page}&limit={api_cfg.page_size}"
         
         print(f"[API] Страница {page + 1}/{api_cfg.pages_limit}: GET {full_url}")
 
