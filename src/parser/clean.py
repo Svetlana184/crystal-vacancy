@@ -214,19 +214,13 @@ def _schedule_text(vac: dict) -> str:
 
 
 def _requirements_text(vac: dict) -> str:
-    """В боевом API требования лежат в `requirement` (объект), в учебных файлах — `requirements`."""
-    return flatten(vac.get("requirement"), REQUIREMENT_LABELS) or flatten(
-        vac.get("requirements"), REQUIREMENT_LABELS
-    )
+    parts = [flatten(vac.get("requirements"), REQUIREMENT_LABELS),
+             flatten(vac.get("requirement"), REQUIREMENT_LABELS)]
+    return "; ".join(p for p in parts if p)
 
 
 def _duty_text(vac: dict) -> str:
-    """Обязанности + дополнительные условия из поля term (если они не дублируют duty)."""
-    duty = clean_field(vac.get("duty"))
-    term = flatten(vac.get("term"))
-    if term and term not in duty:
-        return f"{duty} {term}".strip() if duty else term
-    return duty
+    return clean_field(vac.get("duty"))
 
 
 def _first_location(vac: dict) -> str:
@@ -243,6 +237,7 @@ def _first_location(vac: dict) -> str:
 _RAW_KEYS = (
     "id", "vac_url", "job-name", "duty", "requirement", "requirements", "salary", "salary_min",
     "salary_max", "currency", "schedule", "shift", "employment", "term", "addresses", "work_places",
+    "workPlaceType", "benefitDetails",
 )
 
 
