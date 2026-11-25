@@ -40,7 +40,9 @@ cd crystal-vacancy
 
 ```
 python -m venv venv
-.\venv\Scripts\Activate.ps1 или source venv/bin/activate или # Windows: venv\Scripts\activate
+# macOs/Linux
+source venv/bin/activate 
+# Windows: venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
 ```
