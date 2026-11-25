@@ -42,7 +42,8 @@ cd crystal-vacancy
 python -m venv venv
 # macOs/Linux
 source venv/bin/activate 
-# Windows: venv\Scripts\activate
+# Windows
+venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
 ```
