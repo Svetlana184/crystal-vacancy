@@ -444,3 +444,28 @@ python scripts/ping_api.py
 
 * **[Паша / Github: Pavlik7777] (Роль 5 — Frontend, README, Видео):**  
   Разработка интерактивного веб-интерфейса инспектора отчётов (`index.html`) с поддержкой мок-данных команды, живых данных Trudvsem и режима презентации; подготовка консолидированной документации `README.md` и посекундного плана `VIDEO_SCRIPT.md`; автоматизированная запись демонстрационного видеоролика `videos/demo_video.webm` (2:41) и генерация единой качественной мужской озвучки (`ru-RU-DmitryNeural`).
+
+  Скачать и установить Ollama с https://ollama.com (или в Windows PowerShell: irm https://ollama.com | iex)
+ollama pull qwen2.5:7b
+
+git clone https://github.com/Svetlana184/crystal-vacancy.git
+cd crystal-vacancy
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+copy .env.example .env
+
+тесты:
+Юнит-тесты парсера:
+python -m unittest discover -s tests -v
+
+Проверочный режим (локальный JSON с ИИ):
+python -m src.main run --mode local --file data/mock_vacancies.json
+
+Рабочий режим (реальный API региона 39):
+python -m src.main run --mode api
+
+Запуск сайта:
+cd .\src\
+python -m http.server 8000
+запустить в браузере http://localhost:8000/
